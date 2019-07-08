@@ -1,0 +1,42 @@
+import java.util.*;
+import java.lang.*;
+import java.io.*;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTCreator.Builder;
+import com.auth0.jwt.algorithms.Algorithm;
+
+/* Name of the class has to be "Main" only if the class is public. */
+class jwt {
+    public static void main(String[] args) throws java.lang.Exception {
+        String secret = "j4azz1yn1VCshRwwEF0MCMcJB5kc-_5eKaSjJD0aC2Y=";
+        String issuer = "PAYTM";
+        Map<String, String> claims = new HashMap<>();
+        claims.put("partnerId", "DMT_i30_000200");
+        claims.put("partnerSubId", "7");
+        String uuid = UUID.randomUUID().toString().replace("-", "");
+        claims.put("requestReferenceId", uuid);
+        claims.put("timestamp", String.valueOf(System.currentTimeMillis()));
+        Algorithm algo = null;
+        try {
+            algo = Algorithm.HMAC256(secret);
+        }
+
+        catch (UnsupportedEncodingException e) {
+        }
+
+        Builder jwtBuilder = JWT.create();
+        if (issuer != null) {
+            jwtBuilder.withIssuer(issuer);
+        }
+
+        Set<String> keySet = claims.keySet();
+        for (String key : keySet) {
+            String value = claims.get(key);
+            jwtBuilder.withClaim(key, value);
+        }
+
+        String jwtToken = jwtBuilder.sign(algo);
+        System.out.println(jwtToken);
+    }
+
+}
